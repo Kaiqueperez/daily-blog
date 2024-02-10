@@ -1,32 +1,49 @@
 "use client";
 
-import { InputField } from "@/components/InputField";
-import { TextAreaField } from "@/components/TextAreaField";
-import { useEffect } from "react";
+import InputField from "@/components/InputField";
+import TextAreaField from "@/components/TextAreaField";
+import { blogRepositoryImpl } from "@/repositories/blogRepository";
+import { BlogFields, BlogFiledsRequest } from "@/types";
+import { deletePostUseCase } from "@/useCases/deletePostUseCase";
+import { getPostsUseCase } from "@/useCases/getPostsUseCase";
+import { updatePostUseCase } from "@/useCases/updatePostUseCase";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function Home() {
-  const { handleSubmit, register, reset } = useForm();
+  const [posts, setPosts] = useState<BlogFiledsRequest[]>();
+  const [showModal, setShowModal] = useState(false);
+  const { handleSubmit, register, reset } = useForm({
+    defaultValues: {
+      title: "",
+      note: "",
+    },
+  });
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    await fetch("https://dailyapi-deploy.onrender.com/blogs", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+
     reset();
   };
-
   useEffect(() => {
-    const fetchapi = async () =>
-      await fetch("https://dailyapi-deploy.onrender.com")
-        .then((res) => res.json())
-        .then((res) => console.log(res));
-    fetchapi();
+    const fetchApi = async () => await getPostsUseCase(blogRepositoryImpl);
+    fetchApi().then((data) => setPosts(data));
   }, []);
+
+  const handleEditPost = async () => {
+    await updatePostUseCase(
+      "clsdw6mio0000e2o4gb369uvk",
+      {
+        title: "essse post foi edidato pelo front",
+        note: "Post editado bolado demais",
+      },
+      blogRepositoryImpl
+    );
+  };
+  const handleDelete = async () => {
+    await deletePostUseCase("clsdw6mio0000e2o4gb369uvk", blogRepositoryImpl);
+  };
+
   return (
     <main className=" min-h-screen ">
       <section className="">
@@ -35,14 +52,14 @@ export default function Home() {
             Write your daily journey
           </h1>
           <form
-            className="flex flex-col items-center justify-between gap-3"
+            className="flex flex-col items-center justify-between gap-6"
             onSubmit={handleSubmit(onSubmit)}
           >
             <InputField
               label="title"
               htmlFor="title"
               {...register("title")}
-              dataTestId="input-title"
+              datatestid="input-title"
             />
 
             <TextAreaField
@@ -50,12 +67,29 @@ export default function Home() {
               htmlFor="note"
               placeholder="Write your story"
               {...register("note")}
-              dataTestId="input-note"
+              datatestid="input-note"
             />
             <button type="submit" data-testid="send-button">
               Send journey
             </button>
           </form>
+        </div>
+
+        <dialog open={showModal}>
+          <p>Gostaria de editar esse post ?</p>
+        </dialog>
+
+        <div>
+          {posts?.map((post) => (
+            <div key={post.id}>
+              <h4>{post.title}</h4>
+              <h4>{post.id}</h4>
+              <span>{post.createAt}</span>
+
+              <button onClick={handleEditPost}>Edit</button>
+              <button onClick={handleDelete}>Delete</button>
+            </div>
+          ))}
         </div>
       </section>
     </main>

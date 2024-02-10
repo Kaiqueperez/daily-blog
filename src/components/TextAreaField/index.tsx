@@ -1,16 +1,29 @@
+import { ForwardRefRenderFunction, forwardRef } from "react";
+
 type TextAreaProps = React.ComponentProps<"textarea"> & {
   label: string;
   htmlFor: string;
-  dataTestId: string;
+  datatestid: string;
 };
 
-export const TextAreaField = (props: TextAreaProps) => {
-  const { htmlFor, label, dataTestId } = props;
+export const TextAreaField: ForwardRefRenderFunction<
+  HTMLTextAreaElement,
+  TextAreaProps
+> = (props: TextAreaProps, forwardRef) => {
+  const { htmlFor, label, datatestid } = props;
   return (
     <div>
       <label htmlFor={htmlFor}>{label}</label>
 
-      <textarea {...props} cols={30} rows={6} data-testid={dataTestId} />
+      <textarea
+        {...props}
+        cols={30}
+        rows={6}
+        data-testid={datatestid}
+        ref={forwardRef}
+      />
     </div>
   );
 };
+
+export default forwardRef(TextAreaField);
