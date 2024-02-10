@@ -38,15 +38,23 @@ export default function Home() {
             className="flex flex-col items-center justify-between gap-3"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <InputField label="title" htmlFor="title" {...register("title")} />
+            <InputField
+              label="title"
+              htmlFor="title"
+              {...register("title")}
+              dataTestId="input-title"
+            />
 
             <TextAreaField
               label="note"
               htmlFor="note"
               placeholder="Write your story"
               {...register("note")}
+              dataTestId="input-note"
             />
-            <button type="submit">Send journey</button>
+            <button type="submit" data-testid="send-button">
+              Send journey
+            </button>
           </form>
         </div>
       </section>
