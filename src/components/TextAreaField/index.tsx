@@ -9,18 +9,22 @@ type TextAreaProps = React.ComponentProps<"textarea"> & {
 export const TextAreaField: ForwardRefRenderFunction<
   HTMLTextAreaElement,
   TextAreaProps
-> = (props: TextAreaProps, forwardRef) => {
+> = (props: TextAreaProps, ref) => {
   const { htmlFor, label, datatestid } = props;
+
   return (
-    <div>
-      <label htmlFor={htmlFor}>{label}</label>
+    <div className="flex flex-col items-center">
+      <label htmlFor={htmlFor} className="text-2xl">
+        {label}
+      </label>
 
       <textarea
         {...props}
         cols={30}
-        rows={6}
+        rows={10}
         data-testid={datatestid}
-        ref={forwardRef}
+        className="rounded-2xl p-2 "
+        ref={ref}
       />
     </div>
   );

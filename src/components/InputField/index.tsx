@@ -12,10 +12,17 @@ const InputField: ForwardRefRenderFunction<
 > = (props: InputFieldProps, forwarRef) => {
   const { htmlFor, label, datatestid } = props;
   return (
-    <div>
-      <label htmlFor={htmlFor}>{label}</label>
+    <div className="flex flex-col items-center">
+      <label htmlFor={htmlFor} className="text-2xl">
+        {label}
+      </label>
 
-      <input {...props} data-testid={datatestid} ref={forwarRef} />
+      <input
+        {...props}
+        data-testid={datatestid}
+        className="rounded-2xl p-2"
+        ref={forwarRef}
+      />
     </div>
   );
 };
