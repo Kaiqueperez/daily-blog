@@ -1,19 +1,25 @@
 "use client";
 
 import { BlogForm } from "@/components/BlogForm";
-import InputField from "@/components/InputField";
-import TextAreaField from "@/components/TextAreaField";
 import { useFormHook } from "@/hooks/useFormHook";
 import { blogRepositoryImpl } from "@/repositories/blogRepository";
 import { BlogFiledsRequest } from "@/types";
+import { deletePostUseCase } from "@/useCases/deletePostUseCase";
 import { getPostsUseCase } from "@/useCases/getPostsUseCase";
+import { useRouter } from "next/navigation";
 import useSWR from "swr";
 
 export default function Home() {
-  const formHandler = useFormHook();
   const { isLoading, data: blogPosts } = useSWR("blogPosts", {
     fetcher: () => getPostsUseCase(blogRepositoryImpl),
   });
+  const formHandler = useFormHook();
+
+  const { push } = useRouter();
+
+  const handleDeletePost = async (postId: string) => {
+    await deletePostUseCase(postId, blogRepositoryImpl);
+  };
 
   return (
     <main className=" min-h-screen ">
@@ -27,18 +33,24 @@ export default function Home() {
           {isLoading ? (
             <>Loading...</>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 items-center">
               {blogPosts?.map((post: BlogFiledsRequest) => (
                 <div
-                  className="flex justify-between bg-purple-300  rounded-2xl p-3 items-center"
+                  className="flex justify-between bg-purple-300  rounded-2xl p-3 items-center "
                   key={post.id}
                 >
                   <h4>{post.title}</h4>
                   <div className="flex gap-4">
-                    <button className="bg-purple-500 rounded-xl cursor-pointer p-3">
+                    <button
+                      className="bg-purple-500 rounded-xl cursor-pointer p-3"
+                      onClick={() => push(`edit-blog/${post.id}`)}
+                    >
                       Edit
                     </button>
-                    <button className="bg-red-400 rounded-xl cursor-pointer p-3">
+                    <button
+                      className="bg-red-400 rounded-xl cursor-pointer p-3"
+                      onClick={() => handleDeletePost(post.id)}
+                    >
                       Delete
                     </button>
                   </div>
