@@ -10,7 +10,7 @@ export type BLogRespository = {
 export const blogRepositoryImpl: BLogRespository = {
   createBlogPost: async (data) => {
     try {
-      await fetch("https://dailyapi-deploy.onrender.com/blogs", {
+      await fetch(`${process.env.NEXT_PUBLIC_URL}/blogs`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,8 +23,8 @@ export const blogRepositoryImpl: BLogRespository = {
   },
   getBlogsPosts: async () => {
     try {
-      const data = await fetch("https://dailyapi-deploy.onrender.com").then(
-        (res) => res.json()
+      const data = await fetch(`${process.env.NEXT_PUBLIC_URL}`).then((res) =>
+        res.json()
       );
 
       return data;
@@ -34,7 +34,7 @@ export const blogRepositoryImpl: BLogRespository = {
   },
   updateBlogPost: async (postId, data) => {
     try {
-      await fetch(`https://dailyapi-deploy.onrender.com/post/${postId}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_URL}/post/${postId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export const blogRepositoryImpl: BLogRespository = {
   },
   deleteBlogPost: async (postId) => {
     try {
-      await fetch(`https://dailyapi-deploy.onrender.com/blog/${postId}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_URL}/blog/${postId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
