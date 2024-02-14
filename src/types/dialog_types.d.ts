@@ -1,0 +1,1 @@
+export type dialogText = "edit" | "send" | "delete";
