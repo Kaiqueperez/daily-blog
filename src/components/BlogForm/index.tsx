@@ -1,46 +1,36 @@
-import { UseFormReturn, useWatch } from "react-hook-form";
-import InputField from "../InputField";
-import TextAreaField from "../TextAreaField";
-import { BlogFields, BlogFiledsRequest } from "@/types";
-import { useEffect } from "react";
-import { blogRepositoryImpl } from "@/repositories/blogRepository";
-import { getPostsUseCase } from "@/useCases/getPostsUseCase";
-import useSWR from "swr";
-import { updatePostUseCase } from "@/useCases/updatePostUseCase";
-import useSWRMutation from "swr/mutation";
-import { Ruthie } from "next/font/google";
-import { createPostUseCase } from "@/useCases/createPostUseCase";
-import { deletePostUseCase } from "@/useCases/deletePostUseCase";
+import { UseFormReturn } from 'react-hook-form'
+import InputField from '../InputField'
+import TextAreaField from '../TextAreaField'
+import { BlogFields, BlogFiledsRequest } from '@/types'
+import { useEffect } from 'react'
+import { useBlogContext } from '@/contexts/blogContext'
 
 type BLogFormProps = {
-  formHandler: UseFormReturn<BlogFields, any, BlogFields>;
-  postId?: string;
-};
+  formHandler: UseFormReturn<BlogFields, any, BlogFields>
+  postToEdit?: BlogFiledsRequest
+}
 
-export const BlogForm = ({ formHandler, postId }: BLogFormProps) => {
-  const { handleSubmit, register, reset, watch, setValue } = formHandler;
+export const BlogForm = ({ formHandler, postToEdit }: BLogFormProps) => {
+  const { handleUpdatePost, handlerCreatePost } = useBlogContext()
 
-  const { isLoading } = useSWR("getUniquePost", {
-    fetcher: () => getPostsUseCase(blogRepositoryImpl, postId),
-    onSuccess(data: BlogFiledsRequest) {
-      setValue("note", data.note);
-      setValue("title", data.title);
-    },
-  });
+  const { handleSubmit, register, reset, watch, setValue } = formHandler
 
   const onSubmit = async (data: BlogFields) => {
-    postId
-      ? await updatePostUseCase(postId!, data, blogRepositoryImpl)
-      : await createPostUseCase(data, blogRepositoryImpl);
+    postToEdit?.id
+      ? await handleUpdatePost(postToEdit?.id, data)
+      : await handlerCreatePost(data)
 
-    reset();
-  };
+    reset()
+  }
 
-  const handlerDeletePost = async (postId: string) => {
-    await deletePostUseCase(postId, blogRepositoryImpl);
-  };
+  const isFil = watch('note') !== '' && watch('title') !== ''
 
-  const isFil = watch("note") !== "" && watch("title") !== "";
+  useEffect(() => {
+    if (postToEdit?.id !== '') {
+      setValue('note', postToEdit?.note!)
+      setValue('title', postToEdit?.title!)
+    }
+  }, [postToEdit?.note])
 
   return (
     <form
@@ -51,37 +41,25 @@ export const BlogForm = ({ formHandler, postId }: BLogFormProps) => {
         placeholder="Today was a good day"
         label="Title of note"
         htmlFor="title"
-        {...register("title", { required: "This field is required" })}
+        {...register('title', { required: 'This field is required' })}
         datatestid="input-title"
       />
-
       <TextAreaField
         label="Note"
         htmlFor="note"
         placeholder="Write your story"
-        {...register("note", { required: "This field is required" })}
+        {...register('note', { required: 'This field is required' })}
         datatestid="input-note"
       />
 
-      {postId ? (
-        <button
-          type="submit"
-          data-testid="send-button"
-          className="bg-green-300 p-4 rounded-2xl text-white disabled:bg-gray-300 text-gray-500"
-          disabled={!isFil}
-        >
-          Edit
-        </button>
-      ) : (
-        <button
-          type="submit"
-          data-testid="send-button"
-          className="bg-green-300 p-4 rounded-2xl text-white disabled:bg-gray-300 text-gray-500"
-          disabled={!isFil}
-        >
-          Send
-        </button>
-      )}
+      <button
+        type="submit"
+        data-testid="send-button"
+        className="bg-green-300 p-4 rounded-2xl text-white disabled:bg-gray-300 text-gray-500"
+        disabled={!isFil}
+      >
+        {postToEdit?.id ? 'Edit' : 'Send'}
+      </button>
     </form>
-  );
-};
+  )
+}
