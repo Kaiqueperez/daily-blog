@@ -1,17 +1,15 @@
-describe('Create a Post', () => {
-  it('should create a note', () => {
-    cy.visit(Cypress.env('local'))
+import { homePageActionsDeleteAndUpdateCase } from "../utils"
 
-    cy.get('input[name="title"]').should('be.visible')
+describe('Delete a note', () => {
+  it('should delete a note', () => {
+    homePageActionsDeleteAndUpdateCase()
 
-    cy.get('textarea[name="note"]').should('be.visible')
+    cy.get('button[data-testid="delete-button"]').first().click()
 
-    cy.intercept('GET', '**/dailyapi-deploy**').as('getPosts')
+    cy.intercept('DELETE', '**/blog/**').as('deletePost')
 
-    cy.wait('@getPosts')
+    cy.get('button[data-testid="button-delete-post"]').click()
 
-    cy.get('div[data-testid="posts"]').should('be.visible')
-
-    cy.get('button[id="post-5"]').click()
+    cy.wait('@deletePost').its('response.statusCode').should('eq', 200)
   })
 })

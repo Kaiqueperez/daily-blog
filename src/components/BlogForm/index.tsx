@@ -23,8 +23,6 @@ export const BlogForm = ({ formHandler, postToEdit }: BLogFormProps) => {
     reset()
   }
 
-  const isFil = watch('note') !== '' && watch('title') !== ''
-
   useEffect(() => {
     if (postToEdit?.id !== '') {
       setValue('note', postToEdit?.note!)
@@ -43,6 +41,7 @@ export const BlogForm = ({ formHandler, postToEdit }: BLogFormProps) => {
         htmlFor="title"
         {...register('title', { required: 'This field is required' })}
         datatestid="input-title"
+        maxLength={25}
       />
       <TextAreaField
         label="Note"
@@ -55,8 +54,7 @@ export const BlogForm = ({ formHandler, postToEdit }: BLogFormProps) => {
       <button
         type="submit"
         data-testid="send-button"
-        className="bg-green-300 p-4 rounded-2xl text-white disabled:bg-gray-300 text-gray-500"
-        disabled={!isFil}
+        className="bg-green-300 p-4 rounded-2xl text-black font-bold disabled:bg-gray-300 text-gray-500"
       >
         {postToEdit?.id ? 'Edit' : 'Send'}
       </button>

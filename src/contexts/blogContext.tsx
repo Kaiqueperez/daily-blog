@@ -22,7 +22,6 @@ interface BlogContextProps {
   blogPosts: BlogFiledsRequest[]
   isLoading: boolean
   push: (href: string, options?: NavigateOptions | undefined) => void
-  refresh: () => void
 }
 interface BlogContextProviderProps {
   children?: React.ReactNode
@@ -34,7 +33,7 @@ export const BlogContextProvider: React.FC<BlogContextProviderProps> = ({
 
   const [dialogText, setDialogText] = useState<dialogText>('send')
 
-  const { refresh, push } = useRouter()
+  const { push } = useRouter()
   const pathName = usePathname()
 
   const handleModal = (text: dialogText) => {
@@ -52,7 +51,7 @@ export const BlogContextProvider: React.FC<BlogContextProviderProps> = ({
     handleModal('send')
     setTimeout(() => {
       handleModal('send')
-      refresh()
+      window.location.reload()
     }, 2500)
   }
 
@@ -67,7 +66,7 @@ export const BlogContextProvider: React.FC<BlogContextProviderProps> = ({
 
   const handleDeletePost = async (postId: string) => {
     await deletePostUseCase(postId, blogRepositoryImpl)
-    refresh()
+    window.location.reload()
   }
 
   return (
@@ -80,7 +79,6 @@ export const BlogContextProvider: React.FC<BlogContextProviderProps> = ({
         blogPosts,
         isLoading,
         push,
-        refresh,
         handleDeletePost,
       }}
     >

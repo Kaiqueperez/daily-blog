@@ -10,6 +10,7 @@ export default function Page({ params }: { params: { postId: string } }) {
   const formHandler = useFormHook()
   const { data } = useSWR('getUniquePost', {
     fetcher: () => getPostsUseCase(blogRepositoryImpl, params.postId),
+    keepPreviousData: true,
   })
 
   return (
