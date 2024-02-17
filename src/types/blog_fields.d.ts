@@ -9,3 +9,8 @@ export type BlogFiledsRequest = {
   note: string;
   createAt: string;
 };
+
+export type CreatePostResponse = {
+  message: string
+  postCreated: BlogFiledsRequest
+}

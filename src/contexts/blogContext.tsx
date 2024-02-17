@@ -46,13 +46,15 @@ export const BlogContextProvider: React.FC<BlogContextProviderProps> = ({
     keepPreviousData: true,
   })
 
+  const TIME_TO_REFRESH = 2000
+
   const handlerCreatePost = async (data: BlogFields) => {
     await createPostUseCase(data, blogRepositoryImpl)
     handleModal('send')
     setTimeout(() => {
       handleModal('send')
       window.location.reload()
-    }, 2500)
+    })
   }
 
   const handleUpdatePost = async (postId: string, updatePost: BlogFields) => {
@@ -61,7 +63,7 @@ export const BlogContextProvider: React.FC<BlogContextProviderProps> = ({
     setTimeout(() => {
       handleModal('edit')
       push('/')
-    }, 2500)
+    }, TIME_TO_REFRESH)
   }
 
   const handleDeletePost = async (postId: string) => {

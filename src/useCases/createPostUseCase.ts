@@ -5,5 +5,5 @@ export const createPostUseCase = async (
   data: BlogFields,
   repository: BLogRespository
 ) => {
-  await repository.createBlogPost(data);
+  return await repository.createBlogPost(data);
 };

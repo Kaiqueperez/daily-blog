@@ -13,7 +13,7 @@ type BLogFormProps = {
 export const BlogForm = ({ formHandler, postToEdit }: BLogFormProps) => {
   const { handleUpdatePost, handlerCreatePost } = useBlogContext()
 
-  const { handleSubmit, register, reset, watch, setValue } = formHandler
+  const { handleSubmit, register, reset, setValue } = formHandler
 
   const onSubmit = async (data: BlogFields) => {
     postToEdit?.id
@@ -28,7 +28,7 @@ export const BlogForm = ({ formHandler, postToEdit }: BLogFormProps) => {
       setValue('note', postToEdit?.note!)
       setValue('title', postToEdit?.title!)
     }
-  }, [postToEdit?.note])
+  }, [postToEdit?.id])
 
   return (
     <form
@@ -39,9 +39,11 @@ export const BlogForm = ({ formHandler, postToEdit }: BLogFormProps) => {
         placeholder="Today was a good day"
         label="Title of note"
         htmlFor="title"
-        {...register('title', { required: 'This field is required' })}
+        {...register('title', {
+          required: 'This field is required',
+          maxLength: 25,
+        })}
         datatestid="input-title"
-        maxLength={25}
       />
       <TextAreaField
         label="Note"

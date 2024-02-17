@@ -1,7 +1,7 @@
-import { BlogFields, BlogFiledsRequest } from "@/types";
+import { BlogFields, BlogFiledsRequest, CreatePostResponse } from "@/types";
 
 export type BLogRespository = {
-  createBlogPost: (data: BlogFields) => Promise<void>;
+  createBlogPost: (data: BlogFields) => Promise<CreatePostResponse>;
   getBlogsPosts: () => Promise<BlogFiledsRequest[]>;
   updateBlogPost: (postId: string, data: BlogFields) => Promise<void>;
   deleteBlogPost: (postId: string) => Promise<void>;
@@ -10,13 +10,15 @@ export type BLogRespository = {
 export const blogRepositoryImpl: BLogRespository = {
   createBlogPost: async (data) => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_URL}/blogs`, {
+       return await fetch(`${process.env.NEXT_PUBLIC_URL}/blogs`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      });
+      }).then(data => data.json());
+
+      
     } catch (error) {
       console.error(error);
     }
